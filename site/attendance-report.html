@@ -1,0 +1,257 @@
+
+<html lang="en" >
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Angular Material style sheet -->
+  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="/assets/css/style.css" rel="stylesheet">
+
+   <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>  
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+
+  <!-- Angular Material Library -->
+  <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+  
+  <!-- Your application bootstrap  -->
+  <script type="text/javascript">    
+    
+      angular
+      .module('SamparkApp', ['ngMaterial', 'ngMessages'])
+      .controller('Report', function($scope, $http, $timeout, $mdSidenav) {          
+       
+          $scope.items = {};
+          $http({
+            method  : 'GET',
+            url     : 'assets/js/data/attendance-report.json'                
+          })
+          .success(function(data) {                         
+            $scope.items = data[0].items;
+            $scope.sortFields = data[0].fields[0];
+          });   
+
+          $scope.sortColumn = {"label" : "fname", "sort": false };
+
+          //$scope.propertyName = $scope.sortColumn.label;
+          //$scope.sort = sortColumn.label;
+          //$scope.reverse = $scope.sortColumn.sort;      
+      
+          //$scope.mandals = [];
+          //$scope.sabhas = [];
+           $scope.checkedItems = {'fname': true, 'lname': true, 'mandal': true, 'sabha': true};
+           $scope.checkedItemsArray = [];
+      
+            $scope.toggle = function () {
+              if ($scope.toggle[0] == true) {
+                  $scope.toggle[0] = false;
+              } else {
+                  $scope.toggle[0] = true;
+              }
+            };
+      
+           
+
+           /*  $scope.filterBy = function() {
+                $scope.checkedItemsArray = [];
+                    console.log($scope.checkedItems);
+                  for (item in $scope.checkedItems) {
+                              
+                    if($scope.checkedItems[item]) { 
+                      $scope.checkedItemsArray.push(item);   
+                    }
+                    
+                  }
+            }; */       
+      
+          $scope.$watchCollection('checkedItems', function(newNames, oldNames) {
+            $scope.checkedItemsArray = [];
+            for (item in $scope.checkedItems) {
+                        
+              if($scope.checkedItems[item]) { 
+                $scope.checkedItemsArray.push(item);   
+              }
+              
+            }
+          });
+
+          $scope.toggleLeft = buildToggler('left');
+          $scope.toggleRight = buildToggler('right');
+
+          function buildToggler(componentId) {
+            return function() {
+              $mdSidenav(componentId).toggle();
+            }
+          }
+            
+
+      }).filter('unique', function() {
+          return function(input, key) {
+              var unique = {};
+              var uniqueList = [];
+              for(var i = 0; i < input.length; i++){
+                  if(typeof unique[input[i][key]] == "undefined"){
+                      unique[input[i][key]] = "";
+                      uniqueList.push(input[i]);
+                  }
+              }
+              return uniqueList;
+          };
+    })    
+    .filter('filterMultiple',['$filter',function ($filter) {
+      return function (items, keyObj) {
+        var filterObj = {
+                  data:items,
+                  filteredData:[],
+                  applyFilter : function(obj,key){
+                    var fData = [];
+                    if(this.filteredData.length == 0)
+                      this.filteredData = this.data;
+                    if(obj){
+                      var fObj = {};
+                      if(!angular.isArray(obj)){
+                        fObj[key] = obj;
+                        fData = fData.concat($filter('filter')(this.filteredData,fObj));
+                      }else if(angular.isArray(obj)){
+                        if(obj.length > 0){ 
+                          for(var i=0;i<obj.length;i++){
+                            if(angular.isDefined(obj[i])){
+                              fObj[key] = obj[i];
+                              fData = fData.concat($filter('filter')(this.filteredData,fObj));  
+                            }
+                          }
+                          
+                        }                   
+                      }                 
+                      if(fData.length > 0){
+                        this.filteredData = fData;
+                      }
+                    }
+                  }
+            };
+
+        if(keyObj){
+          angular.forEach(keyObj,function(obj,key){
+            filterObj.applyFilter(obj,key);
+          });     
+        }
+        
+        return filterObj.filteredData;
+      }
+    }]);
+      
+    
+           
+  </script>
+
+
+</head>
+<body ng-app="SamparkApp" layout="column">
+  
+    <div ng-controller="Report" layout="column" ng-cloak>
+
+        <md-toolbar  layout="row">
+          <div class="md-toolbar-tools">
+            <h3>
+              <span>Sampark </span>
+            </h3>
+            <span flex></span>
+            <md-button class="md-raised" ng-click="toggleLeft()" aria-label="Filter">
+              Filter
+            </md-button>
+            <md-button ng-click="toggle()" class="md-icon-button" aria-label="Search">
+              <i class="material-icons">search</i>
+            </md-button>            
+          </div>
+        </md-toolbar>
+
+        <md-toolbar layout="row" class="md-accent search-toolbar" ng-show="toggle[0]" >
+          <div class="md-toolbar-tools" layout="row">
+             <md-input-container md-no-float flex="grow" class="md-icon-left md-block" >              
+              <md-icon class="material-icons">search</md-icon>
+              <input ng-model="searchText" type="text" placeholder="Search">              
+            </md-input-container>
+            <md-button ng-click="toggle()" class="md-icon-button" aria-label="Search">
+                <i class="material-icons">clear</i>
+              </md-button>
+          </div>
+        </md-toolbar>
+
+
+        <div layout="row" flex >
+        <md-sidenav class="md-sidenav-left md-whiteframe-4dp"  layout="column" md-component-id="left">
+          <md-content>
+             <md-select ng-model="sortColumn">
+              <md-option ng-selected="key == sortColumn.label" ng-repeat="(key,data) in sortFields" ng-value="{ 'label': '{{ key }}', 'sort': false  }">
+                {{data}} - ASC
+              </md-option>
+              <md-option ng-repeat="(key,data) in sortFields" ng-value="{ 'label': '{{ key }}', 'sort': true  }">
+                {{data}} - DSC
+              </md-option>
+            </md-select>
+          
+          {{  sortColumn }} 
+          -- {{  sortColumn['label'] }} {{  sortColumn['sort'] }}  --
+          
+            <md-tabs md-dynamic-height md-border-bottom>
+              <md-tab label="Mandal">
+                <md-content class="md-padding">
+                    <md-list-item ng-repeat="item in items | unique:'mandal'">
+                    <p> {{ item.mandal }} </p>
+                    <md-checkbox  class="md-secondary" ng-model="checkedItems[item.mandal]" ></md-checkbox>
+                  </md-list-item>
+              
+                </md-content>
+              </md-tab>
+              <md-tab label="Sabha">
+                <md-content class="md-padding">
+                  
+                  <md-list-item ng-repeat="item in items | unique:'sabha' | filterMultiple:{mandal:checkedItemsArray }">
+                    <p> {{ item.sabha }} </p>
+                    <md-checkbox class="md-secondary" ng-model="checkedItems[item.sabha]"></md-checkbox>
+                  </md-list-item>
+
+                </md-content>
+              </md-tab>
+              <md-tab label="Columns">
+                <md-content class="md-padding">
+                  
+                  <md-list-item ng-repeat="(key,data) in sortFields">
+                    <p> {{ data }} </p>
+                    <md-checkbox class="md-secondary" ng-model="checkedItems[key]"></md-checkbox>
+                  </md-list-item>        
+                  
+              </md-tab>
+            </md-tabs>
+
+          </md-content>
+        </md-sidenav>
+
+        <md-content layout="column" flex>
+
+          <md-list flex>
+            <md-list-item class="md-3-line" ng-repeat="item in items | filterMultiple:{mandal:checkedItemsArray,  sabha:checkedItemsArray} |  filter:searchText |  orderBy:sortColumn.label:sortColumn.sort " ng-click="null">
+              <div class="md-list-item-text" layout="column">
+          
+                <h3> <span ng-if="checkedItems['fname']"> {{ item.fname }} </span> <span ng-if="checkedItems['lname']"> {{ item.lname }} </span></h3>
+                <h4><span ng-if="checkedItems['mandal']"> {{ item.mandal }} </span></h4>
+                <p><span ng-if="checkedItems['sabha']"> {{ item.sabha }} </span></p>
+              </div>
+            </md-list-item>
+          </md-list>
+          {{checkedItemsArray}}
+           {{toggle[0]}}
+        </md-content>
+
+    </div>
+  
+  </body>
+</html>
+
+<!--
+Copyright 2016 Google Inc. All Rights Reserved. 
+Use of this source code is governed by an MIT-style license that can be in foundin the LICENSE file at http://material.angularjs.org/license.
+-->

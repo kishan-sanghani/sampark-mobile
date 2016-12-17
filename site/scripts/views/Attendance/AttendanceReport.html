@@ -1,0 +1,52 @@
+<div ng-controller="Report" layout="column" ng-cloak>
+
+    <md-toolbar  layout="row">
+      <div class="md-toolbar-tools">
+        <h3>
+          <span>Sampark </span>
+        </h3>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="toggleLeft()" aria-label="Filter">
+            <i class="material-icons">filter_list</i>
+        </md-button>
+        <md-button ng-click="toggleLeft2()" class="md-icon-button" aria-label="Sort">
+          <i class="material-icons">swap_vert</i>
+        </md-button>   
+        <md-button ng-click="toggle()" class="md-icon-button" aria-label="Search">
+          <i class="material-icons">search</i>
+        </md-button>   
+          
+
+      </div>
+    </md-toolbar>
+
+    <md-content layout="column" flex>
+          
+         <md-tabs  md-border-bottom>    
+
+            <md-tab ng-init"fdata1=[eval(item.fdata)]" ng-if="$index != 0" label="{{item.mandal_name}}" ng-repeat="item in items">
+              <md-content class="md-padding">
+                  {{ item.fdata }}            
+                  {{fdata1}}
+                 <table>
+                    <tr>
+                      <td>Date</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr ng-repeat="(key,val) in item.fdata1 track by $index">
+                      <td>{{key}}</td>
+                      <td>{{val}}</td>
+                    </tr>
+                 </table>
+            
+
+              </md-content>
+            </md-tab>
+
+          </md-tabs>
+           
+
+        
+      </md-content>
+
+  </div>

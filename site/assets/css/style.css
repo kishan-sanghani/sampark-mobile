@@ -1,0 +1,77 @@
+.md-toolbar-tools md-input-container .md-errors-spacer {
+	display:none;
+}
+
+.search-toolbar {
+	position: absolute;
+	top:0;
+}
+
+.md-sidenav-left {
+    width:100%;
+    min-width: initial;
+    max-width: initial;    
+}
+
+
+.md-sidenav-left md-content {
+    display: flex;
+    align-content:space-between;
+    flex-direction: column;
+    flex: 1
+}
+
+.md-sidenav-left md-tabs {
+    flex: 1;
+    display: flex;
+    border-bottom: rgba(0,0,0,0.12) 1px solid;
+}
+
+    
+.md-sidenav-left md-tabs-wrapper {
+    flex:0.50;
+    z-index: 1;
+    background: rgb(255,255,255);
+    border-width: 0 1px 0px !important;
+}
+
+.md-sidenav-left md-tabs-content-wrapper {
+    flex:1;    
+    position: relative;
+    top: 0 !important;
+}
+
+.md-sidenav-left md-tabs-content-wrapper md-tab-content {
+    flex:1;    
+    position: absolute;
+    overflow: auto;
+}
+
+.md-sidenav-left .md-tab.md-active {
+    background: #eee;
+}
+
+.md-sidenav-left md-ink-bar {
+    display:none;
+}
+
+.md-sidenav-left md-tabs-wrapper md-next-button, 
+.md-sidenav-left md-tabs-wrapper md-prev-button {
+    display:none;
+}
+
+.md-sidenav-left md-tabs-canvas {
+    margin: 0;
+    display: flex;
+    flex: 1;
+    height: auto;
+}
+
+.md-sidenav-left md-pagination-wrapper {
+    flex: 1;
+    display: flex;
+    width: auto !important;
+    position: static;
+    height: auto !important;
+    flex-direction: column;
+}

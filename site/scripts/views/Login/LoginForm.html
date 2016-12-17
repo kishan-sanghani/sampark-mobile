@@ -1,0 +1,33 @@
+<form name="LoginForm" ng-controller="LoginForm" layout="column" layout-padding ng-cloak>
+
+    
+    
+    	<div ng-if="authenticated" role="alert">
+      		<div>Please verify your login username/password.</div>
+     	</div>
+    
+
+      <md-content class="md-no-momentum">
+
+        <md-input-container class="md-block">
+          
+          <input ng-model="user.email" name="email" type="email" placeholder="Email (required)" ng-required="true">
+        </md-input-container>
+
+        
+
+        <md-input-container class="md-block">
+          <!-- Use floating placeholder instead of label -->
+          <input ng-model="user.password" type="password" placeholder="Password (required)" ng-required="true">
+        </md-input-container>
+
+         <md-button ng-disabled="!LoginForm.$valid" ng-click="processForm()" class="md-raised md-primary">Login</md-button>
+
+
+      </md-content>
+
+        {{user}}
+
+        {{LoginForm.$valid}}
+
+</form>
